@@ -45,17 +45,16 @@
     show-bibliography-as-footnote: bibliography(title: none, "bibliography.bib"),
   ),
   config-info(
-    title: [Presentation Title],
-    subtitle: [Subtitle],
+    title: [The Capabilities to catch 'em all],
+    subtitle: [Unify _Multitier_, _Choreography_, and _Aggregate_ via Capabilities],
     author: author_list(
       (
         (first_author("Nicolas Farabegoli"), "nicolas.farabegoli@unibo.it"),
-        ("Foo Bar", "foo@bar.com"),
       )
     ),
     date: datetime.today().display("[day] [month repr:long] [year]"),
     institution: [University of Bologna],
-    logo: align(right)[#image("images/disi.svg", width: 55%)],
+    // logo: align(right)[#image("images/disi.svg", width: 55%)],
   ),
 )
 
@@ -137,8 +136,8 @@
 == Slide
 *Bold* and _italic_ text.
 
-This is a citation #cite(label("DBLP:journals/fgcs/FarabegoliPCV24")).
-This another citation #cite(label("DBLP:journals/iot/FarabegoliPCV24"))
+// This is a citation #cite(label("DBLP:journals/fgcs/FarabegoliPCV24")).
+// This another citation #cite(label("DBLP:journals/iot/FarabegoliPCV24"))
 
 #alert[This is an alert.]
 

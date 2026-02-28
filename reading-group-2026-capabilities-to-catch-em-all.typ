@@ -3,6 +3,7 @@
 #import "@preview/fontawesome:0.6.0": *
 #import "@preview/ctheorems:1.1.3": *
 #import "@preview/numbly:0.1.0": numbly
+#import "@preview/cetz:0.4.2"
 #import "utils.typ": *
 
 // Pdfpc configuration
@@ -73,102 +74,125 @@
 #show bibliography: set text(size: 0.75em)
 #show footnote.entry: set text(size: 0.75em)
 
-// #set heading(numbering: numbly("{1}.", default: "1.1"))
-
 #title-slide()
 
-// == Outline <touying:hidden>
+= LociX
 
-// #components.adaptive-columns(outline(title: none, indent: 1em))
+== The capabilities as unifying abstraction
 
-= Animation
+#components.side-by-side[
+  == Goals
+  #v(0.75em)
+  - Unifying *Mutltitier*, *Choreography*, and *Collective systems* under a single unified framework.
+  - *Effects as capabilities* as the unifying abstraction.
+  - *Placement types* to integrate the different paradigms.
+][
 
-== Simple Animation
+#cetz.canvas({
+  import cetz.draw: *
+  
+  // Paradigm positions (arranged in triangle around center)
+  let multitier-pos = (-1.8, -1)
+  let choreography-pos = (1.8, -1)
+  let collective-pos = (0, 1.2)
+  let center-pos = (0, 0)
+})
 
-#pdfpc.speaker-note("This is a note that only the speaker will see.")
+]
 
-// #set text(font: "Fira Sans", weight: 350, size: 20pt)
-// #show math.equation: set text(font: "Fira Math")
-// #set strong(delta: 200)
-// #set par(justify: true)
+= Multiparty Languages
 
-// #set quote(block: true)
-// #show quote: set align(left)
-// #show quote: set pad(x: 2em, y: -0.8em)
+== A global approach
 
-// #set raw(tab-size: 4)
-// #show raw.where(block: true): block.with(
-//   fill: luma(240),
-//   inset: 1em,
-//   radius: 0.7em,
-//   width: 100%,
-// )
+*Multiparty* languages appraches distributed systems from a #bold[global] perspective.
 
-// #show bibliography: set text(size: 0.8em)
-// #show footnote.entry: it => {
-//   block(inset: (x: 2em, y: 0.1em))[#text(size: 0.75em)[#it.note.body]]
-// }
+- A *global specification* of the system is given, describing the interactions between all parties.
+- The global specification is then *projected* to local specifications for each party.
+- The local specifications are then executed by each party.
 
-// #let fcite(clabel) = {
-//   footnote(cite(form: "full", label(clabel)))
-// }
+== Choreography
 
-// #let author = block(inset: 0.1em)[
-//   #table(inset: 0.5em, stroke: none, columns: (auto, 4fr),  align: (left, left),
-//     [#alert[*Author 1*]], [`author1@mail.com`],
-//     [Author 2], [`author2@mail.com`],
-//     [Author 3], [`author3@mail.com`],
-//   )
-//   #place(right, dy:-1.5em)[
-//     #figure(image("images/disi.svg", width:40%))
-//   ]
-// ]
+#components.side-by-side[
+  #bold[Choreography] allows to specify a _protocol_ that describes the interactions between parties in a distributed system.
+  #v(0.75em)
+  - The choreography defines the *parties* in the system.
+  - The choreography defines the *messages* exchanged between parties.
+  // - The choreography defines the *order* of interactions between parties.
+  - The protocol is  *deadlock-free* and *communication-safe* by construction.
+][
 
-// #title-slide(
-//   title: "Slide Title",
-//   subtitle: "Subtitle",
-//   author: author,
-//   // date: datetime.today().display("[day] [month repr:long] [year]"),
-// )
-
-// #new-section-slide("Slide section 1")
-
-== Slide
-*Bold* and _italic_ text.
-
-// This is a citation #cite(label("DBLP:journals/fgcs/FarabegoliPCV24")).
-// This another citation #cite(label("DBLP:journals/iot/FarabegoliPCV24"))
-
-#alert[This is an alert.]
-
-== Code slide
-
-```kotlin
-fun main() {
-    println("Hello, world!")
-    for (i in 0..9) {
-        println(i)
-    }
-    println("Goodbye, world!")
-}
+```rust
+let msg_at_alice = op.locally(Alice, |_| {
+  println!("Hello from Alice!");
+  "Hello from Alice!".to_string()
+});
+let msg_at_bob = op.comm(
+  Alice, Bob, &msg_at_alice
+);
+op.locally(Bob, |un| {
+  let m = un.unwrap(&msg_at_bob);
+  println!("Bob received: {}", m);
+  m
+});
 ```
+]
 
-== Title and subtitle slide
+== Multitier
 
-=== This is a subtitle
+#components.side-by-side[
+  #bold[Multitier] specifies an *architecture* and *peers* of a distributed system, allowing to _move_ code between peers.
+  #v(0.75em)
+  - The architecture defines the *peers* in the system.
+  - The *communications* between peers are #bold[implicit] and conform to the architecture.
+  - The distributed logic is implemented by "jumping" between peers.
+][
+```scala
+@multitier object Chat:
+  @peer type Server <: {
+    type Tie <: Multiple[Client] }
+  @peer type Client <: {
+    type Tie <: Single[Server] }
 
-#lorem(24)
+  val msg = on[Client] { Evt() }
 
-=== This is a subtitle
+  val pubMsg = on[Server]:
+    msg.asLocalAllSeq.map:
+      case (_, m) => m
+    
+  def main() = on[Client]:
+    pubMsg.asLocal.observe:
+      case (_, m) =>
+        println(s"Received: $m")
+```
+]
 
-#lorem(34)
+== Collective systems
 
-== FontAwesome icons
+#components.side-by-side[
+  #bold[Collective systems] are distributed systems where the number of parties is not fixed, and parties can join and leave the system dynamically.
+  #v(0.75em)
+  - The system dynamic: *join*, *leave*, *fail*.
+  - The agents interact with each other to achieve a *common goal*.
+  - The system is *self-organizing* and *scalable*.
+][
+```scala
+def crowding =
+  val dist = distanceTo(S(300))
+  val people = // number of people
+  // count devices in range
+  val count =
+    C(dist, people, _ + _)
+  // max distance
+  val r =
+    C(dist, dist, _ max _)
+  // density = count / area
+  count / (math.Pi * r * r)
+```
+]
 
-=== Icon in a title #fa-java()
+= How to unify them?
 
-#fa-icon("github") -- Github icon \
-#fa-icon("github", fill: blue) -- Github icon blue fill
+
 
 // #slide[
 //   #bibliography("bibliography.bib")

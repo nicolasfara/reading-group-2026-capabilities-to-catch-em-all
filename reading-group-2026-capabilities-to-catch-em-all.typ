@@ -316,7 +316,27 @@ A capture set to *pure functions* can be added later on `A ->{c,d} B` meaning th
 This syntax is a short-hand for `(A -> B)^{c,d}`.
 
 == Capability Classifiers
-TBD
+
+#components.side-by-side(columns: (2fr, 1fr))[
+```
+              Capability
+              /        \
+             /          \
+            /            \
+           /              \
+ SharedCapability     ExclusiveCapability
+ ----------------            |
+        |                    |
+        |                 Stateful
+        |                    |
+        |                    |
+     Control              Unscoped
+     -------              --------
+```
+][
+/ SharedCapability: can reference other shared capabilities, but not exclusive
+/ ExclusiveCapability: is a base trait for capabilities that are checked for anti-aliasing restrictions
+]
 
 = Framework
 

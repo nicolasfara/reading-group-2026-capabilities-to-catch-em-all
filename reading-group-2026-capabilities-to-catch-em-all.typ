@@ -81,13 +81,15 @@
 == The capabilities as unifying abstraction
 
 #components.side-by-side[
-  == Goals
+  === Goals
   #v(0.75em)
   - Unifying *Mutltitier*, *Choreography*, and *Collective systems* under a single unified framework.
   - *Effects as capabilities* as the unifying abstraction.
   - *Placement types* to integrate the different paradigms.
 ][
-
+  #align(center)[
+  #fa-rocket(size: 8em)
+  ]
 ]
 
 = Multiparty Languages
